@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <!-- Add Bootstrap CSS link -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Weather App</h1>
+      <form id="weatherForm">
+        <div class="form-group">
+          <label for="cityInput">Enter City:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="cityInput"
+            placeholder="E.g., London"
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Get Weather</button>
+      </form>
+      <div id="weatherResult" class="mt-4"></div>
+    </div>
+
+    <!-- Add Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      // Handle form submission
+      document
+        .getElementById("weatherForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const city = document.getElementById("cityInput").value;
+
+          // Make an API request to the Express backend
+          fetch(`/weather?city=${city}`)
+            .then((response) => response.json())
+            .then((data) => {
+              const weatherResult = document.getElementById("weatherResult");
+              if (data.error) {
+                weatherResult.innerHTML = `<div class="alert alert-danger">${data.error.message}</div>`;
+              } else {
+                weatherResult.innerHTML = `
+              <div class="alert alert-success">
+                <h4>${data.name}, ${data.sys.country}</h4>
+                <p>Temperature: ${data.main.temp}°C</p>
+                <p>Weather: ${data.weather[0].description}</p>
+              </div>
+            `;
+              }
+            })
+            .catch((error) => console.error(error));
+        });
+    </script>
+  </body>
+</html>
